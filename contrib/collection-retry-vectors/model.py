@@ -32,8 +32,9 @@ class Record:
 class LeaderModel:
     """Small sequential reference design with optional broken controls."""
 
-    def __init__(self, keyed: bool = True):
+    def __init__(self, keyed: bool = True, existing_resource_first: bool = False):
         self.keyed = keyed
+        self.existing_resource_first = existing_resource_first
         self.mapping: dict[tuple[str, bytes], Record] = {}
         self.allocated: list[Record] = []
         self.trace: list[dict] = []
@@ -64,6 +65,8 @@ class LeaderModel:
                         "batch": known.batch}
             kind = {"pending": "existing", "complete": "associated_error",
                     "deleted": "associated_error"}[known.state]
+            if self.existing_resource_first and known.state == "complete":
+                kind = "existing_complete"
             self.log("reuse_association", job=known.job, batch=known.batch,
                      state=known.state, response=kind)
             return {"kind": kind, "job": known.job, "batch": known.batch}
@@ -153,7 +156,8 @@ def concurrent(schedule: str, atomic: bool) -> dict:
 
 
 def sequential_case(case: dict) -> dict:
-    leader = LeaderModel(keyed=case.get("keyed", True))
+    leader = LeaderModel(keyed=case.get("keyed", True),
+                         existing_resource_first=case.get("existing_resource_first", False))
     responses = []
     for action in case["actions"]:
         op = action["op"]

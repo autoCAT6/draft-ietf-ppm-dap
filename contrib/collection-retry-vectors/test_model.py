@@ -9,6 +9,14 @@ from model import LeaderModel, concurrent, run_suite, schedules
 
 
 class AssociationTests(unittest.TestCase):
+    def test_retained_resource_first_proposal_returns_completed_state(self):
+        leader = LeaderModel(existing_resource_first=True)
+        leader.create("t", b"k", b"request", "after_commit_before_response")
+        leader.transition("complete")
+        response = leader.create("t", b"k", b"request")
+        self.assertEqual(response, {"kind": "existing_complete", "job": "J1", "batch": "B1"})
+        self.assertEqual(len(leader.allocated), 1)
+
     def test_lost_response_reuses_the_committed_job_and_batch(self):
         leader = LeaderModel()
         self.assertIsNone(leader.create("t", b"k", b"request", "after_commit_before_response"))

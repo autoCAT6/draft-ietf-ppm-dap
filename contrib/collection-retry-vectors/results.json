@@ -3,6 +3,23 @@
   "normative_revision": "PR797 head 1af12a40e7e72bedfe55ac9bfeb8573433ccd25d",
   "sequential": [
     {
+      "id": "retained-completed-resource-first-proposal",
+      "classification": "proposed clarification: return retained job current state before overlap rejection",
+      "expected_allocations": 1,
+      "allocated_jobs": [
+        "J1"
+      ],
+      "responses": [
+        null,
+        {
+          "kind": "existing_complete",
+          "job": "J1",
+          "batch": "B1"
+        }
+      ],
+      "matches_model_expectation": true
+    },
+    {
       "id": "lost-synchronous-response-unkeyed-control",
       "classification": "illustration of the original issue's known ambiguity; not a conforming draft-19 baseline",
       "expected_allocations": 2,

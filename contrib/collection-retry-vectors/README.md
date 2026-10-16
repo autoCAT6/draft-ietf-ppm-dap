@@ -12,13 +12,13 @@ Python 3.10+ and the standard library are sufficient; no installation or network
 sh run.sh
 ```
 
-The runner executes 10 tests, then rewrites `results.json` and `traces.jsonl`. To place generated output elsewhere:
+The runner executes 11 tests, then rewrites `results.json` and `traces.jsonl`. To place generated output elsewhere:
 
 ```sh
 python3 model.py --out /tmp/dap-retry-results
 ```
 
-`cases.json` contains 12 sequential probes. The model also enumerates the 20 order-preserving interleavings of two three-step workers. In the reference transaction model all 20 keep one committed job; the deliberately racy lookup/allocate/publish control creates two committed jobs in 18. These are counts in a tiny deterministic model, not probabilities or a distributed-systems proof.
+`cases.json` contains 13 sequential probes. The model also enumerates the 20 order-preserving interleavings of two three-step workers. In the reference transaction model all 20 keep one committed job; the deliberately racy lookup/allocate/publish control creates two committed jobs in 18. These are counts in a tiny deterministic model, not probabilities or a distributed-systems proof.
 
 ## Contract and explicit assumptions
 
@@ -34,6 +34,8 @@ The observed property is that a recognized key does not silently select another 
 The unkeyed next-batch control illustrates #795's already-reported ambiguity; it is not a conforming implementation of all draft-19 rules. Racy and split-write controls are intentionally faulty implementation choices. The retention probe concerns an unspecified boundary and is not a confirmed protocol violation.
 
 Task/result expiry, GET polling, valid aggregation parameters, extension parsing, actual wire encoding, HTTP, HPKE and VDAF are outside this harness. It cannot determine whether any real implementation is interoperable, safe, or durable.
+
+`retained-completed-resource-first-proposal` exercises the alternative proposed clarification: a retained completed resource returns its current state before overlap rejection. This is an explicit switch, not an assertion that the proposal is adopted. The default interpretation remains present so the two outcomes can be inspected separately; both preserve the original association.
 
 ## Questions supported by the traces
 

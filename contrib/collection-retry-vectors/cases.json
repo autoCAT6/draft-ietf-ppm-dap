@@ -1,6 +1,13 @@
 {
   "sequential": [
     {
+      "id": "retained-completed-resource-first-proposal",
+      "classification": "proposed clarification: return retained job current state before overlap rejection",
+      "existing_resource_first": true,
+      "actions": [{"op": "create", "crash": "after_commit_before_response"}, {"op": "complete"}, {"op": "create"}],
+      "expected_allocations": 1
+    },
+    {
       "id": "lost-synchronous-response-unkeyed-control",
       "classification": "illustration of the original issue's known ambiguity; not a conforming draft-19 baseline",
       "keyed": false,
