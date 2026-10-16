@@ -1,0 +1,77 @@
+{
+  "sequential": [
+    {
+      "id": "lost-synchronous-response-unkeyed-control",
+      "classification": "illustration of the original issue's known ambiguity; not a conforming draft-19 baseline",
+      "keyed": false,
+      "actions": [{"op": "create", "crash": "after_commit_before_response"}, {"op": "complete"}, {"op": "create"}],
+      "expected_allocations": 2
+    },
+    {
+      "id": "lost-response-keyed-reference",
+      "classification": "PR797 association requirement plus atomic reference design",
+      "actions": [{"op": "create", "crash": "after_commit_before_response"}, {"op": "create"}],
+      "expected_allocations": 1
+    },
+    {
+      "id": "lost-synchronous-response-keyed-reference",
+      "classification": "original association retained after completion; response precedence remains unresolved",
+      "actions": [{"op": "create", "crash": "after_commit_before_response"}, {"op": "complete"}, {"op": "create"}],
+      "expected_allocations": 1
+    },
+    {
+      "id": "completed-job-retry",
+      "classification": "reference choice following PR797 parenthetical; reconciliation with section 4.6.1 unresolved",
+      "actions": [{"op": "create"}, {"op": "complete"}, {"op": "create"}],
+      "expected_allocations": 1
+    },
+    {
+      "id": "changed-payload-same-key",
+      "classification": "reject is a reference policy, not a specified HTTP error",
+      "actions": [{"op": "create"}, {"op": "create", "payload": "different-request"}],
+      "expected_allocations": 1
+    },
+    {
+      "id": "same-key-distinct-tasks",
+      "classification": "key uniqueness is scoped to task",
+      "actions": [{"op": "create"}, {"op": "create", "task": "task-2"}],
+      "expected_allocations": 2
+    },
+    {
+      "id": "crash-before-durable-commit",
+      "classification": "reference persistence design probe",
+      "actions": [{"op": "create", "crash": "before_commit"}, {"op": "create"}],
+      "expected_allocations": 1
+    },
+    {
+      "id": "crash-between-job-and-map-negative-control",
+      "classification": "intentionally broken durable-write ordering; not a Janus finding",
+      "actions": [{"op": "create", "crash": "after_job_before_mapping"}, {"op": "create"}],
+      "expected_allocations": 2
+    },
+    {
+      "id": "deleted-job-retained-association",
+      "classification": "reference tombstone policy; retention duration unspecified",
+      "actions": [{"op": "create"}, {"op": "delete"}, {"op": "create"}],
+      "expected_allocations": 1
+    },
+    {
+      "id": "deleted-job-forgotten-association-control",
+      "classification": "retention clarification probe; not a proven protocol violation",
+      "actions": [{"op": "create"}, {"op": "delete", "forget_mapping": true}, {"op": "create"}],
+      "expected_allocations": 2
+    },
+    {
+      "id": "distinct-key-distinct-allocation",
+      "classification": "independent logical requests in synthetic batch supply",
+      "actions": [{"op": "create"}, {"op": "create", "key": "cd"}],
+      "expected_allocations": 2
+    },
+    {
+      "id": "empty-key-rejected",
+      "classification": "TLS-presentation 1-byte minimum, no real wire parser tested",
+      "actions": [{"op": "create", "key": ""}],
+      "expected_allocations": 0
+    }
+  ]
+}

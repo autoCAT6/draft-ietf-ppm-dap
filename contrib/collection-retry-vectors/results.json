@@ -1,0 +1,255 @@
+{
+  "scope": "Synthetic state-machine probes only; no real DAP implementation executed",
+  "normative_revision": "PR797 head 1af12a40e7e72bedfe55ac9bfeb8573433ccd25d",
+  "sequential": [
+    {
+      "id": "lost-synchronous-response-unkeyed-control",
+      "classification": "illustration of the original issue's known ambiguity; not a conforming draft-19 baseline",
+      "expected_allocations": 2,
+      "allocated_jobs": [
+        "J1",
+        "J2"
+      ],
+      "responses": [
+        null,
+        {
+          "kind": "created",
+          "job": "J2",
+          "batch": "B2"
+        }
+      ],
+      "matches_model_expectation": true
+    },
+    {
+      "id": "lost-response-keyed-reference",
+      "classification": "PR797 association requirement plus atomic reference design",
+      "expected_allocations": 1,
+      "allocated_jobs": [
+        "J1"
+      ],
+      "responses": [
+        null,
+        {
+          "kind": "existing",
+          "job": "J1",
+          "batch": "B1"
+        }
+      ],
+      "matches_model_expectation": true
+    },
+    {
+      "id": "lost-synchronous-response-keyed-reference",
+      "classification": "original association retained after completion; response precedence remains unresolved",
+      "expected_allocations": 1,
+      "allocated_jobs": [
+        "J1"
+      ],
+      "responses": [
+        null,
+        {
+          "kind": "associated_error",
+          "job": "J1",
+          "batch": "B1"
+        }
+      ],
+      "matches_model_expectation": true
+    },
+    {
+      "id": "completed-job-retry",
+      "classification": "reference choice following PR797 parenthetical; reconciliation with section 4.6.1 unresolved",
+      "expected_allocations": 1,
+      "allocated_jobs": [
+        "J1"
+      ],
+      "responses": [
+        {
+          "kind": "created",
+          "job": "J1",
+          "batch": "B1"
+        },
+        {
+          "kind": "associated_error",
+          "job": "J1",
+          "batch": "B1"
+        }
+      ],
+      "matches_model_expectation": true
+    },
+    {
+      "id": "changed-payload-same-key",
+      "classification": "reject is a reference policy, not a specified HTTP error",
+      "expected_allocations": 1,
+      "allocated_jobs": [
+        "J1"
+      ],
+      "responses": [
+        {
+          "kind": "created",
+          "job": "J1",
+          "batch": "B1"
+        },
+        {
+          "kind": "reference_policy_conflict",
+          "job": "J1",
+          "batch": "B1"
+        }
+      ],
+      "matches_model_expectation": true
+    },
+    {
+      "id": "same-key-distinct-tasks",
+      "classification": "key uniqueness is scoped to task",
+      "expected_allocations": 2,
+      "allocated_jobs": [
+        "J1",
+        "J2"
+      ],
+      "responses": [
+        {
+          "kind": "created",
+          "job": "J1",
+          "batch": "B1"
+        },
+        {
+          "kind": "created",
+          "job": "J2",
+          "batch": "B2"
+        }
+      ],
+      "matches_model_expectation": true
+    },
+    {
+      "id": "crash-before-durable-commit",
+      "classification": "reference persistence design probe",
+      "expected_allocations": 1,
+      "allocated_jobs": [
+        "J1"
+      ],
+      "responses": [
+        null,
+        {
+          "kind": "created",
+          "job": "J1",
+          "batch": "B1"
+        }
+      ],
+      "matches_model_expectation": true
+    },
+    {
+      "id": "crash-between-job-and-map-negative-control",
+      "classification": "intentionally broken durable-write ordering; not a Janus finding",
+      "expected_allocations": 2,
+      "allocated_jobs": [
+        "J1",
+        "J2"
+      ],
+      "responses": [
+        null,
+        {
+          "kind": "created",
+          "job": "J2",
+          "batch": "B2"
+        }
+      ],
+      "matches_model_expectation": true
+    },
+    {
+      "id": "deleted-job-retained-association",
+      "classification": "reference tombstone policy; retention duration unspecified",
+      "expected_allocations": 1,
+      "allocated_jobs": [
+        "J1"
+      ],
+      "responses": [
+        {
+          "kind": "created",
+          "job": "J1",
+          "batch": "B1"
+        },
+        {
+          "kind": "associated_error",
+          "job": "J1",
+          "batch": "B1"
+        }
+      ],
+      "matches_model_expectation": true
+    },
+    {
+      "id": "deleted-job-forgotten-association-control",
+      "classification": "retention clarification probe; not a proven protocol violation",
+      "expected_allocations": 2,
+      "allocated_jobs": [
+        "J1",
+        "J2"
+      ],
+      "responses": [
+        {
+          "kind": "created",
+          "job": "J1",
+          "batch": "B1"
+        },
+        {
+          "kind": "created",
+          "job": "J2",
+          "batch": "B2"
+        }
+      ],
+      "matches_model_expectation": true
+    },
+    {
+      "id": "distinct-key-distinct-allocation",
+      "classification": "independent logical requests in synthetic batch supply",
+      "expected_allocations": 2,
+      "allocated_jobs": [
+        "J1",
+        "J2"
+      ],
+      "responses": [
+        {
+          "kind": "created",
+          "job": "J1",
+          "batch": "B1"
+        },
+        {
+          "kind": "created",
+          "job": "J2",
+          "batch": "B2"
+        }
+      ],
+      "matches_model_expectation": true
+    },
+    {
+      "id": "empty-key-rejected",
+      "classification": "TLS-presentation 1-byte minimum, no real wire parser tested",
+      "expected_allocations": 0,
+      "allocated_jobs": [],
+      "responses": [
+        {
+          "kind": "invalid_key"
+        }
+      ],
+      "matches_model_expectation": true
+    }
+  ],
+  "concurrency": {
+    "atomic_reference": {
+      "schedules_examined": 20,
+      "single_allocation": 20,
+      "duplicate_allocation": 0
+    },
+    "racy_negative_control": {
+      "schedules_examined": 20,
+      "single_allocation": 2,
+      "duplicate_allocation": 18
+    }
+  },
+  "all_model_expectations_met": true,
+  "interpretation": {
+    "atomicity": "Reference design assumption, not mandated storage architecture",
+    "negative_controls": "Racy/split-write controls intentionally defective; retention probe unspecified; none are implementation findings",
+    "changed_payload": "Local reject policy; exact protocol response remains a question",
+    "completed_response": "Associated error is a reference choice following the parenthetical; relation to existing-resource response remains unresolved",
+    "deletion": "Retention comparison identifies a clarification to request, not a proven violation",
+    "crash": "Persistence is assumed; retry occurs in the same in-memory object, not an actual process restart"
+  }
+}
